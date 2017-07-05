@@ -14,12 +14,14 @@ net = caffe.Net(model_path, 1, weights=weights_path)
 #image = caffe.io.load_image(sys.argv[1], False) #Loads the image from the first argument variable
 
 imagefilenames = ['data/mnist_three.png', 'data/mnist_six.png', 'data/mnist_nine.png']
+for i in range(0,100):
+    imagefilenames.append(imagefilenames[0])
 transformer = caffe.io.Transformer({'data': net.blobs['data'].data.shape})
 transformer.set_transpose('data', (2,0,1))  # move image channels to outermost dimension
 transformer.set_raw_scale('data', 255)      # rescale from [0, 1] to [0, 255]
 
-# reshape data to allow for 3 images
-net.blobs['data'].reshape(3,        # batch size
+# reshape data to allow for multiple images
+net.blobs['data'].reshape(len(imagefilenames),        # batch size
                           1,         # 3-channel (BGR) images
                           28, 28)  # image size is 227x227
 
